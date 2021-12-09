@@ -1,5 +1,5 @@
 {
-  "name": "peertube-plugin-quickstart",
+  "name": "peertube-plugin-angular-route",
   "description": "PeerTube plugin quickstart",
   "version": "0.0.3",
   "author": "Chocobozzz",
