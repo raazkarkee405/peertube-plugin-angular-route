@@ -1,42 +1,25 @@
-function register({ registerHook, peertubeHelpers }) {
-
- // to display content in the route /plugins/information
-  registerHook({
-    target: "action:router.navigation-end",
-    handler: async ({ path }) => {
-      if (path === "/my-information") {
-        await fetch(peertubeHelpers.getBaseRouterRoute() + "/mydata", {
-          method: "GET",
-          headers: peertubeHelpers.getAuthHeader(),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log("HEELO::", data.email);
-            const mainRow = document.getElementsByClassName("main-row")[0];
-            const notFound =
-              document.getElementsByTagName("my-page-not-found")[0];
-
-            mainRow.removeChild(notFound);
-
-            const element = document.createElement("div");
-            element.setAttribute("id", "new-value");
-
-            const h1 = document.createElement("h1");
-
-            const newContext = document.createTextNode(data.email);
-
-            h1.appendChild(newContext);
-
-            element.appendChild(h1);
-
-            mainRow.appendChild(element);
-          });
-      } else {
-        const deleteNode = document.getElementById("new-value");
-        deleteNode.parentElement.removeChild(deleteNode);
-      }
+function register({ registerHook, peertubeHelpers, registerClientRoute }) {
+  // to display content in the route /p/my-information
+  const options = {
+    route: "my-information",
+    onMount: async (options) => {
+      const { rootEl } = options;
+      await fetch(peertubeHelpers.getBaseRouterRoute() + "/mydata", {
+        method: "GET",
+        headers: peertubeHelpers.getAuthHeader(),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const z = document.createElement("h3");
+          z.innerHTML = data.email;
+          // rootEl.setAttribute("id", "root");
+          rootEl.appendChild(z);
+        });
     },
-  });
+  };
+  registerClientRoute(options);
+
+  console.log("plugin route", peertubeHelpers.getBasePluginClientPath());
 
   // to add item in left menu
   registerHook({
@@ -52,7 +35,7 @@ function register({ registerHook, peertubeHelpers }) {
               label: "My Information",
               icon: "trending",
               shortLabel: "My Information",
-              path: "/my-information",
+              path: "/p/my-information",
             },
           ],
         },
